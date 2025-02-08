@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie.txt アップローダー</title>
+</head>
+<body>
+    <h2>cookie.txt をアップロード</h2>
+    <input type="file" id="fileInput" accept=".txt">
+    <button onclick="applyCookies()">適用</button>
+    
+    <h2>テスト用フォーム</h2>
+    <form action="https://example.com/submit" method="POST">
+        <input type="text" name="test" placeholder="テスト入力">
+        <button type="submit">送信</button>
+    </form>
+    
+    <script>
+        function applyCookies() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("ファイルを選択してください。");
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const lines = event.target.result.split('\n');
+                lines.forEach(line => {
+                    if (line.startsWith('#') || line.trim() === '') return;
+                    
+                    const parts = line.split('\t');
+                    if (parts.length >= 7) {
+                        const domain = parts[0];
+                        const flag = parts[1];
+                        const path = parts[2];
+                        const secure = parts[3];
+                        const expiration = parts[4];
+                        const name = parts[5];
+                        const value = parts[6];
+                        
+                        document.cookie = `${name}=${value}; path=${path}; domain=${domain}; ${secure === 'TRUE' ? 'Secure' : ''}`;
+                    }
+                });
+                alert("クッキーを適用しました！");
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
