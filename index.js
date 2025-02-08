@@ -162,7 +162,7 @@ const upload = multer({ dest: 'uploads/' });
 app.use(cookieParser());
 app.use(express.static('public'));
 
-app.post('/upload', upload.single('cookieFile'), (req, res) => {
+app.post('/upload-c', upload.single('cookieFile'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('ファイルがアップロードされていません。');
     }
