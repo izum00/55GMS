@@ -150,6 +150,47 @@ app.get("/api/usedTokens", (req, res) => {
   res.json({ usedTokens: tokenUsage, model: currentModel });
 });
 
+
+const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const cookieParser = require('cookie-parser');
+
+
+const upload = multer({ dest: 'uploads/' });
+
+app.use(cookieParser());
+app.use(express.static('public'));
+
+app.post('/upload', upload.single('cookieFile'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('ファイルがアップロードされていません。');
+    }
+    
+    fs.readFile(req.file.path, 'utf8', (err, data) => {
+        if (err) return res.status(500).send('ファイルの読み込みに失敗しました。');
+        
+        const cookies = {};
+        const lines = data.split('\n');
+        lines.forEach(line => {
+            if (line.startsWith('#') || line.trim() === '') return;
+            const parts = line.split('\t');
+            if (parts.length >= 7) {
+                const name = parts[5];
+                const value = parts[6];
+                cookies[name] = value;
+            }
+        });
+        
+        Object.keys(cookies).forEach(name => {
+            res.cookie(name, cookies[name], { path: '/', httpOnly: false });
+        });
+        
+        res.send('クッキーを適用しました！');
+    });
+});
+
+
 app.post("/api/signUp", async (req, res) => {
   let { password, username, premium = false, captchaResponse } = req.body;
 
