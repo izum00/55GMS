@@ -154,7 +154,6 @@ app.get("/api/usedTokens", (req, res) => {
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 
-const app = express();
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.text()); // テキストデータとしてリクエストを処理
