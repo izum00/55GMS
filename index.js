@@ -151,7 +151,6 @@ app.get("/api/usedTokens", (req, res) => {
 });
 
 
-const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
